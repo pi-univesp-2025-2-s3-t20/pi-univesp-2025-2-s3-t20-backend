@@ -163,11 +163,9 @@ application-*.properties
 # Docker
 .dockerignore
 
-# Local configuration
-application-local.properties
-application-dev.properties
-application-prod.properties
-
 # Build artifacts
 build/
 dist/
+
+
+!application-prd.properties
