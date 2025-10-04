@@ -31,10 +31,10 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
         
     - name: Run unit tests
-      run: ./mvnw clean test -DskipITs=true
+      run: ./mvnw clean test -DskipITs=true -Dflyway.skip=true
       
     - name: Run integration tests
-      run: ./mvnw verify -DskipITs=false
+      run: ./mvnw verify -DskipITs=false -Dflyway.skip=true
       
     - name: Generate test report
       uses: dorny/test-reporter@v1

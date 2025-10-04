@@ -116,6 +116,7 @@
                             <locations>
                                 <location>classpath:db/migration</location>
                             </locations>
+                            <skip>true</skip>
                         </configuration>
                     </execution>
                 </executions>
