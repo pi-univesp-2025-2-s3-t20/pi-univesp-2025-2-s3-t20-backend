@@ -1,0 +1,50 @@
+ID_Cliente;Nome_Cliente;Bairro;Cidade;Tipo_Cliente
+C001;Maria Souza;Centro;Mogi das Cruzes;Pessoa Física
+C002;João Pereira;Vila Nova;Suzano;Pessoa Física
+C003;Ana Lima;Jardim Brasil;Mogi das Cruzes;Pessoa Física
+C004;Carlos Silva;Centro;Poá;Pessoa Física
+C005;Fernanda Reis;Bela Vista;Guararema;Pessoa Física
+C006;Lucas Andrade;Santa Clara;Mogi das Cruzes;Pessoa Física
+C007;Mariana Costa;Jardim América;Arujá;Pessoa Física
+C008;Pedro Oliveira;Vila Nova;Suzano;Pessoa Física
+C009;Juliana Martins;Bela Vista;Itaquaquecetuba;Pessoa Física
+C010;Rafael Almeida;Vila Esperança;Ferraz de Vasconcelos;Pessoa Física
+C011;Camila Ferreira;Centro;Mogi das Cruzes;Pessoa Física
+C012;André Rocha;Jardim Brasil;Guararema;Pessoa Jurídica
+C013;Patrícia Gomes;Vila Nova;Poá;Pessoa Física
+C014;Felipe Souza;Bela Vista;Suzano;Pessoa Física
+C015;Bianca Mendes;Santa Clara;Itaquaquecetuba;Pessoa Física
+C016;Rodrigo Carvalho;Jardim América;Mogi das Cruzes;Pessoa Física
+C017;Larissa Ribeiro;Centro;Arujá;Pessoa Física
+C018;Daniel Moreira;Vila Esperança;Suzano;Pessoa Física
+C019;Fernanda Alves;Jardim Brasil;Ferraz de Vasconcelos;Pessoa Física
+C020;Bruno Lima;Bela Vista;Guararema;Pessoa Física
+C021;Ana Luiza;Centro ;Mogi das Cruzes;Pessoa Física
+C022;Marcelo Brito;Vila Hélio ;Mogi das Cruzes;Pessoa Física
+C023;Pedro Henrique;Jardim Avenida ;Mogi das Cruzes;Pessoa Física
+C024;Mariana Alves;Jardim Veneza ;Mogi das Cruzes;Pessoa Física
+C026;Eduardo Santana;Vila Natal ;Mogi das Cruzes;Pessoa Física
+C027;João Vitor;Vila Bela Vista ;Mogi das Cruzes;Pessoa Física
+C028;Patrícia Gomes;Mogi Moderno ;Mogi das Cruzes;Pessoa Física
+C029;Camila Rocha;Alto da Boa Vista ;Mogi das Cruzes;Pessoa Física
+C030;Rodrigo Pires;Parque Santana;Mogi das Cruzes;Pessoa Física
+C031;Lucas Gabriel;Centro ;Mogi das Cruzes;Pessoa Física
+C032;Vanessa Barbosa;Centro ;Mogi das Cruzes;Pessoa Física
+C033;Isabela Martins;Vila Natal ;Mogi das Cruzes;Pessoa Física
+C034;Felipe Duarte;Alto da Boa Vista ;Mogi das Cruzes;Pessoa Física
+C035;Rafael Souza;Vila Natal ;Mogi das Cruzes;Pessoa Física
+C036;Aline Castro;Vila Sud Menuci ;Mogi das Cruzes;Pessoa Física
+C037;Fernanda Lima;Centro ;Mogi das Cruzes;Pessoa Física
+C038;Bruno Araújo;Jardim Veneza ;Mogi das Cruzes;Pessoa Física
+C039;Guilherme Torres;Centro ;Mogi das Cruzes;Pessoa Física
+C040;Gabriela Nunes;Mogi Moderno ;Mogi das Cruzes;Pessoa Física
+C041;Beatriz Mendes;Jardim Veneza ;Mogi das Cruzes;Pessoa Física
+C042;Leonardo Almeida;Vila Natal ;Mogi das Cruzes;Pessoa Física
+C043;Thiago Carvalho;Parque Santana;Mogi das Cruzes;Pessoa Física
+C044;Sofia Moreira;Centro ;Mogi das Cruzes;Pessoa Física
+C045;Larissa Costa;Parque Santana;Mogi das Cruzes;Pessoa Física
+C046;Diego Fernandes;Alto da Boa Vista ;Mogi das Cruzes;Pessoa Física
+C047;André Luiz;Centro ;Mogi das Cruzes;Pessoa Física
+C048;Carolina Ribeiro;Centro ;Mogi das Cruzes;Pessoa Física
+C049;Juliana Oliveira;Mogi Moderno ;Mogi das Cruzes;Pessoa Física
+C050;Matheus Silva;Centro ;Mogi das Cruzes;Pessoa Física

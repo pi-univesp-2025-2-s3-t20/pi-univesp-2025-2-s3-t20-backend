@@ -1,0 +1,5 @@
+ID_Pagamento;Forma_Pagamento
+FP01;Dinheiro
+FP02;PIX
+FP03;Cartão Crédito
+FP04;Cartão Débito

@@ -1,0 +1,37 @@
+####
+# This Dockerfile is used in order to build a container that runs the Spring Boot application
+#
+# Before building the container image run:
+#
+# ./mvnw clean package
+#
+# Then, build the image with:
+#
+# docker build -f src/main/docker/Dockerfile.spring -t spring/pi-univesp-2025-2-s3-t20-backend .
+#
+# Then run the container using:
+#
+# docker run -i --rm -p 8080:8080 spring/pi-univesp-2025-2-s3-t20-backend
+#
+# For debugging, you can expose the debug port:
+#
+# docker run -i --rm -p 8080:8080 -p 5005:5005 -e JAVA_DEBUG=true spring/pi-univesp-2025-2-s3-t20-backend
+#
+###
+
+FROM openjdk:17-jdk-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy the Spring Boot JAR file
+COPY target/*.jar app.jar
+
+# Expose port
+EXPOSE 8080
+
+# Set JVM options for better performance in containers
+ENV JAVA_OPTS="-Xmx512m -Xms256m -XX:+UseG1GC -XX:+UseContainerSupport"
+
+# Run the application
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

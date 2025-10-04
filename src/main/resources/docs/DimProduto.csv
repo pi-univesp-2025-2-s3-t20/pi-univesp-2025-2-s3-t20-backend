@@ -1,0 +1,80 @@
+ID_Produto;Produto;Categoria;Pedido Mínimo; Custo_Unitario ;Preco_Sugerido; Cento_Preco 
+P001;Coxinha de Frango;Salgado;25;; R$ 0.80 ; R$ 80.00 
+P002;Bolinha de queijo;Salgado;25;; R$ 0.80 ; R$ 80.00 
+P003;Kibe;Salgado;25;; R$ 0.80 ; R$ 80.00 
+P004;Croquete de carne;Salgado;25;; R$ 0.80 ; R$ 80.00 
+P005;Risole de Carne;Salgado;25;; R$ 0.80 ; R$ 80.00 
+P006;Risole de Calabresa;Salgado;25;; R$ 0.80 ; R$ 80.00 
+P007;Risole de Pizza;Salgado;25;; R$ 0.80 ; R$ 80.00 
+P008;Risole de Queijo com Parmesão;Salgado;25;; R$ 0.80 ; R$ 80.00 
+P009;Risole de Brócolis com Ricota;Salgado;25;; R$ 0.80 ; R$ 80.00 
+P010;Esfiha de Carne;Assado;25;; R$ 0.80 ; R$ 80.00 
+P011;Esfiha de Calabresa;Assado;25;; R$ 0.80 ; R$ 80.00 
+P012;Esfiha de Frango com requeijão;Assado;25;; R$ 0.80 ; R$ 80.00 
+P013;Esfiha de queijo com Parmesão;Assado;25;; R$ 0.80 ; R$ 80.00 
+P014;Esfiha de Brócolis com Ricota;Assado;25;; R$ 0.80 ; R$ 80.00 
+P015;Pastelzinho de Carne;Assado;25;; R$ 0.80 ; R$ 80.00 
+P016;Pastelzinho de Calabresa;Assado;25;; R$ 0.80 ; R$ 80.00 
+P017;Pastelzinho de Frango com requeijão;Assado;25;; R$ 0.80 ; R$ 80.00 
+P018;Pastelzinho de Queijo com Parmesão;Assado;25;; R$ 0.80 ; R$ 80.00 
+P019;Pastelzinho de Brócolis com Ricota;Assado;25;; R$ 0.80 ; R$ 80.00 
+P020;Enroladinho de Salsicha;Assado;25;; R$ 0.80 ; R$ 80.00 
+P021;Enroladinho de Pizza;Assado;25;; R$ 0.80 ; R$ 80.00 
+P022;Empada de Palmito;Assado;25;; R$ 0.80 ; R$ 80.00 
+P023;Empada de Frango;Assado;25;; R$ 0.80 ; R$ 80.00 
+P024;Empada de Queijo;Assado;25;; R$ 0.80 ; R$ 80.00 
+P025;Empada de Calabresa com Requeijão;Assado;25;; R$ 0.80 ; R$ 80.00 
+P026;Kibe de Soja;Vegetariano;25;; R$ 0.70 ; R$ 70.00 
+P027;Croquete de cenoura;Vegetariano;25;; R$ 0.70 ; R$ 70.00 
+P028;Croquete de Milho;Vegetariano;25;; R$ 0.70 ; R$ 70.00 
+P029;Risole de Brócolis;Vegetariano;25;; R$ 0.70 ; R$ 70.00 
+P030;Risole de Escarola;Vegetariano;25;; R$ 0.70 ; R$ 70.00 
+P031;Risole de Palmito;Vegetariano;25;; R$ 0.70 ; R$ 70.00 
+P032;Risole de Carne de Soja;Vegetariano;25;; R$ 0.70 ; R$ 70.00 
+P033;Esfiha de Brócolis;Vegetariano;25;; R$ 0.70 ; R$ 70.00 
+P034;Esfiha de Escarola;Vegetariano;25;; R$ 0.70 ; R$ 70.00 
+P035;Esfina de Carne de Soja;Vegetariano;25;; R$ 0.70 ; R$ 70.00 
+P036;Empada de Palmito;Vegetariano;25;; R$ 0.70 ; R$ 70.00 
+P037;Croquete de Bacalhau;Salgados Especiais;50;; R$ 1.15 ; R$ 115.00 
+P038;Croquete de Carne Seca;Salgados Especiais;50;; R$ 1.15 ; R$ 115.00 
+P039;Bolinho de Bacon com catupiry;Salgados Especiais;50;; R$ 1.20 ; R$ 120.00 
+P040;Coxinha de Costela;Salgados Especiais;50;; R$ 1.20 ; R$ 120.00 
+P041;Coxinha de Frango com catupiry;Salgados Especiais;50;; R$ 0.95 ; R$ 95.00 
+P042;Esfiha de Carne Seca com catupiry;Salgados Especiais;50;; R$ 1.20 ; R$ 120.00 
+P043;Empada de Camarão;Salgados Especiais;50;; R$ 1.10 ; R$ 110.00 
+P044;Coxinha de Jaca;Vegetariano Especiais;50;; R$ 1.10 ; R$ 110.00 
+P045;Risole de Shimeji;Vegetariano Especiais;50;; R$ 0.80 ; R$ 80.00 
+P046;Esfiha de Shimeji;Vegetariano Especiais;50;; R$ 0.80 ; R$ 80.00 
+P047;Esfiha de Jaca;Vegetariano Especiais;50;; R$ 1.10 ; R$ 110.00 
+P048;Frango (patê de frango com cenoura e alface);Lanchinhos;50;; R$ 1.30 ; R$ 130.00 
+P049;Queijo e Presunto (Queijo mussarela, presunto, alface, tomate e maionese);Lanchinhos;50;; R$ 1.30 ; R$ 130.00 
+P050;Salame (Salame, queijo prato, alface, tomate e maionese);Lanchinhos;50;; R$ 1.30 ; R$ 130.00 
+P051;Atum (Patê de atum e alface);Lanchinhos;50;; R$ 1.15 ; R$ 115.00 
+P052;Ervas finas com alho (patê de ervas finas com alho e tomate);Lanchinhos Vegetariano;50;; R$ 1.15 ; R$ 115.00 
+P053;Azeitona preta (patê de azeitona preta, alface e tomate);Lanchinhos Vegetariano;50;; R$ 1.15 ; R$ 115.00 
+P054;Pasta de berinjela (pasta de berinjela, alface e tomate);Lanchinhos Vegetariano;50;; R$ 1.15 ; R$ 115.00 
+P055;Chocolate tradicional;Brigadeiros - tradicional;50;; R$ 1.00 ; R$ 100.00 
+P056;Beijinho;Brigadeiros - tradicional;50;; R$ 1.00 ; R$ 100.00 
+P057;Bicho de pé;Brigadeiros - tradicional;50;; R$ 1.00 ; R$ 100.00 
+P058;Brigadeiro Branco;Brigadeiros - tradicional;50;; R$ 1.00 ; R$ 100.00 
+P059;Prestígio;Brigadeiros - tradicional;50;; R$ 1.00 ; R$ 100.00 
+P060;Cajuzinho;Brigadeiros - tradicional;50;; R$ 1.00 ; R$ 100.00 
+P061;Romeu e Julieta;Brigadeiros - tradicional;50;; R$ 1.00 ; R$ 100.00 
+P062;Paçoca;Brigadeiros - tradicional;50;; R$ 1.00 ; R$ 100.00 
+P063;Olho de Sogra;Brigadeiros - tradicional;50;; R$ 1.00 ; R$ 100.00 
+P064;Ninho com nutella;Brigadeiros - Gourmet;50;; R$ 1.40 ; R$ 140.00 
+P065;Churros com doce de leite;Brigadeiros - Gourmet;50;; R$ 1.40 ; R$ 140.00 
+P066;Brigadeiro com nutella;Brigadeiros - Gourmet;50;; R$ 1.40 ; R$ 140.00 
+P067;Brigadeiro de limão com suspiro;Brigadeiros - Gourmet;50;; R$ 1.40 ; R$ 140.00 
+P068;Ferrero;Brigadeiros - Gourmet;50;; R$ 1.40 ; R$ 140.00 
+P069;Surpresa de Uva (Brigadeiro de ninho e uva thompson);Doce no copinho;50;; R$ 1.20 ; R$ 120.00 
+P070;Chocolate com morango (brigadeiro tradicional e morangos);Doce no copinho;50;; R$ 1.20 ; R$ 120.00 
+P071;Bicho de pé (brigadeiro de morango e morango);Doce no copinho;50;; R$ 1.20 ; R$ 120.00 
+P072;Mousse de limão (mousse de limão com raspas de limão);Doce no copinho;50;; R$ 1.20 ; R$ 120.00 
+P073;Brigadeiro;Mini Brownies;50;; R$ 1.20 ; R$ 120.00 
+P074;Nutella;Mini Brownies;50;; R$ 1.20 ; R$ 120.00 
+P075;Leite Ninho;Mini Brownies;50;; R$ 1.20 ; R$ 120.00 
+P076;Doce de leite;Mini Brownies;50;; R$ 1.20 ; R$ 120.00 
+P077;Abacaxi com coco;Empadinha Doce;50;; R$ 1.00 ; R$ 100.00 
+P078;Brigadeiro;Palha Italiana;50;; R$ 1.00 ; R$ 100.00 
+P079;Leite Ninho;Palha Italiana;50;; R$ 1.00 ; R$ 100.00 
