@@ -27,16 +27,6 @@ As migrations devem ser executadas na seguinte ordem, respeitando as dependênci
 - Inserção completa de todas as 473 vendas do arquivo FatoVendas.csv
 - **Dependência**: produtos, clientes, formas_pagamento
 
-### 6. V6__Create_Readonly_User.sql
-- Criação de usuário readonly para acesso ao banco de dados
-- **Dependência**: Todas as tabelas devem existir
-- **Funcionalidade**: 
-  - Cria role `pi_readonly` com senha `readonly_password_2025`
-  - Concede permissões SELECT em todas as tabelas
-  - Concede permissões de USAGE em sequências
-  - Aplica permissões para tabelas futuras
-- **Nota**: Executa apenas em PostgreSQL (pulada automaticamente no H2)
-
 ## Estrutura dos Dados
 
 ### Formas de Pagamento (V2)
