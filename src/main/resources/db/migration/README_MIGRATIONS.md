@@ -35,6 +35,7 @@ As migrations devem ser executadas na seguinte ordem, respeitando as dependênci
   - Concede permissões SELECT em todas as tabelas
   - Concede permissões de USAGE em sequências
   - Aplica permissões para tabelas futuras
+- **Nota**: Executa apenas em PostgreSQL (pulada automaticamente no H2)
 
 ## Estrutura dos Dados
 
