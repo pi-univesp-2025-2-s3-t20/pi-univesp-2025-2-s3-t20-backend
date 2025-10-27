@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class ClienteResource {
     @Operation(summary = "Listar todos os clientes", description = "Retorna uma lista com todos os clientes cadastrados")
     @ApiResponse(responseCode = "200", description = "Lista de clientes retornada com sucesso",
             content = @Content(schema = @Schema(implementation = ClienteDTO.class)))
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'READONLY')")
     public List<ClienteDTO> listarClientes() {
         return clienteService.listarTodos().stream()
                 .map(mapperService::toClienteDTO)
@@ -47,6 +49,7 @@ public class ClienteResource {
                     content = @Content(schema = @Schema(implementation = ClienteDTO.class))),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'READONLY')")
     public ResponseEntity<ClienteDTO> buscarCliente(
             @Parameter(description = "ID do cliente", required = true, example = "1")
             @PathVariable Long id) {
@@ -64,6 +67,7 @@ public class ClienteResource {
                     content = @Content(schema = @Schema(implementation = ClienteDTO.class))),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'READONLY')")
     public ResponseEntity<ClienteDTO> buscarClientePorCodigo(
             @Parameter(description = "Código único do cliente", required = true, example = "CLI001")
             @PathVariable String codigo) {
@@ -81,6 +85,7 @@ public class ClienteResource {
                     content = @Content(schema = @Schema(implementation = ClienteDTO.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
     })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<ClienteDTO> criarCliente(
             @Parameter(description = "Dados do cliente a ser criado", required = true)
             @RequestBody ClienteDTO clienteDTO) {
@@ -104,6 +109,7 @@ public class ClienteResource {
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
     })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<ClienteDTO> atualizarCliente(
             @Parameter(description = "ID do cliente a ser atualizado", required = true, example = "1")
             @PathVariable Long id,
@@ -127,6 +133,7 @@ public class ClienteResource {
             @ApiResponse(responseCode = "204", description = "Cliente deletado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletarCliente(
             @Parameter(description = "ID do cliente a ser deletado", required = true, example = "1")
             @PathVariable Long id) {
@@ -140,6 +147,7 @@ public class ClienteResource {
     @GetMapping("/count")
     @Operation(summary = "Contar clientes", description = "Retorna o número total de clientes cadastrados")
     @ApiResponse(responseCode = "200", description = "Contagem de clientes retornada com sucesso")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'READONLY')")
     public Long contar() {
         return clienteService.contar();
     }
