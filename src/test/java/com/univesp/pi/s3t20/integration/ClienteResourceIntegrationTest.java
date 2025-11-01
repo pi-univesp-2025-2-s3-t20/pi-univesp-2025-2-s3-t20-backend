@@ -1,87 +1,86 @@
 package com.univesp.pi.s3t20.integration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.univesp.pi.s3t20.model.Cliente;
 import com.univesp.pi.s3t20.repository.ClienteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.test.web.servlet.MockMvc;
+
 import java.util.HashMap;
 import java.util.Map;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest
+@AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class ClienteResourceIntegrationTest {
 
-    @LocalServerPort
-    private int port;
-
     @Autowired
-    private TestRestTemplate restTemplate;
-    
+    private MockMvc mockMvc;
+
     @Autowired
     private ClienteRepository clienteRepository;
 
-    private String baseUrl;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         clienteRepository.deleteAll();
-        baseUrl = "http://localhost:" + port;
+    }
+
+    private Cliente criarCliente(String codigo, String nome, String bairro, String cidade, String tipo) {
+        Cliente cliente = new Cliente();
+        cliente.setIdCliente(codigo);
+        cliente.setNomeCliente(nome);
+        cliente.setBairro(bairro);
+        cliente.setCidade(cidade);
+        cliente.setTipoCliente(tipo);
+        return clienteRepository.save(cliente);
     }
 
     @Test
-    void testListarTodosClientes() {
-        // Criar alguns clientes de teste
-        Cliente cliente1 = new Cliente();
-        cliente1.setIdCliente("TEST001");
-        cliente1.setNomeCliente("Cliente Teste 1");
-        cliente1.setBairro("Centro");
-        cliente1.setCidade("São Paulo");
-        cliente1.setTipoCliente("PF");
-        clienteRepository.save(cliente1);
+    @WithMockUser
+    void testListarTodosClientes() throws Exception {
+        criarCliente("TEST001", "Cliente Teste 1", "Centro", "São Paulo", "PF");
+        criarCliente("TEST002", "Cliente Teste 2", "Zona Sul", "Rio de Janeiro", "PJ");
 
-        Cliente cliente2 = new Cliente();
-        cliente2.setIdCliente("TEST002");
-        cliente2.setNomeCliente("Cliente Teste 2");
-        cliente2.setBairro("Zona Sul");
-        cliente2.setCidade("Rio de Janeiro");
-        cliente2.setTipoCliente("PJ");
-        clienteRepository.save(cliente2);
-        
-        ResponseEntity<Cliente[]> response = restTemplate.getForEntity(baseUrl + "/clientes", Cliente[].class);
-        
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(2, response.getBody().length);
+        mockMvc.perform(get("/clientes"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
-    void testCriarCliente() {
-        // Criar DTO para o cliente
+    @WithMockUser(roles = "USER")
+    void testCriarCliente() throws Exception {
         Map<String, Object> clienteDTO = new HashMap<>();
         clienteDTO.put("nomeCliente", "Novo Cliente");
         clienteDTO.put("bairro", "Centro");
         clienteDTO.put("cidade", "São Paulo");
         clienteDTO.put("tipoCliente", "Pessoa Física");
 
-        ResponseEntity<Map> response = restTemplate.postForEntity(baseUrl + "/clientes", clienteDTO, Map.class);
-        
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("Novo Cliente", response.getBody().get("nomeCliente"));
+        mockMvc.perform(post("/clientes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(clienteDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.nomeCliente", is("Novo Cliente")));
     }
 
     @Test
-    void testBuscarClientePorIdInexistente() {
-        ResponseEntity<String> response = restTemplate.getForEntity(baseUrl + "/clientes/999", String.class);
-        
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    @WithMockUser
+    void testBuscarClientePorIdInexistente() throws Exception {
+        mockMvc.perform(get("/clientes/999"))
+                .andExpect(status().isNotFound());
     }
 }

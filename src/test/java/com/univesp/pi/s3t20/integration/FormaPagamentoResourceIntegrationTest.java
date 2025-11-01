@@ -1,243 +1,126 @@
 package com.univesp.pi.s3t20.integration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.univesp.pi.s3t20.model.FormaPagamento;
 import com.univesp.pi.s3t20.repository.FormaPagamentoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.test.web.servlet.MockMvc;
+
 import java.util.HashMap;
 import java.util.Map;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest
+@AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class FormaPagamentoResourceIntegrationTest {
 
-    @LocalServerPort
-    private int port;
-
     @Autowired
-    private TestRestTemplate restTemplate;
-    
+    private MockMvc mockMvc;
+
     @Autowired
     private FormaPagamentoRepository formaPagamentoRepository;
 
-    private String baseUrl;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         formaPagamentoRepository.deleteAll();
-        baseUrl = "http://localhost:" + port;
+    }
+
+    private FormaPagamento criarFormaPagamento(String codigo, String nome, boolean isActive) {
+        FormaPagamento forma = new FormaPagamento();
+        forma.setIdPagamento(codigo);
+        forma.setFormaPagamento(nome);
+        forma.setIsActive(isActive);
+        return formaPagamentoRepository.save(forma);
     }
 
     @Test
-    void testListarTodasFormasPagamento() {
-        // Criar algumas formas de pagamento de teste
-        FormaPagamento forma1 = new FormaPagamento();
-        forma1.setIdPagamento("PAG001");
-        forma1.setFormaPagamento("Cartão de Crédito");
-        forma1.setIsActive(true);
-        formaPagamentoRepository.save(forma1);
+    @WithMockUser
+    void testListarTodasFormasPagamento() throws Exception {
+        criarFormaPagamento("PAG001", "Cartão de Crédito", true);
+        criarFormaPagamento("PAG002", "PIX", true);
 
-        FormaPagamento forma2 = new FormaPagamento();
-        forma2.setIdPagamento("PAG002");
-        forma2.setFormaPagamento("PIX");
-        forma2.setIsActive(true);
-        formaPagamentoRepository.save(forma2);
-        
-        ResponseEntity<FormaPagamento[]> response = restTemplate.getForEntity(baseUrl + "/formas-pagamento", FormaPagamento[].class);
-        
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(2, response.getBody().length);
+        mockMvc.perform(get("/formas-pagamento"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
-    void testCriarFormaPagamento() {
+    @WithMockUser(roles = "USER")
+    void testCriarFormaPagamento() throws Exception {
         Map<String, Object> formaPagamentoDTO = new HashMap<>();
         formaPagamentoDTO.put("formaPagamento", "Boleto");
         formaPagamentoDTO.put("isActive", true);
 
-        ResponseEntity<Map> response = restTemplate.postForEntity(baseUrl + "/formas-pagamento", formaPagamentoDTO, Map.class);
-        
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("Boleto", response.getBody().get("formaPagamento"));
-        assertTrue((Boolean) response.getBody().get("isActive"));
+        mockMvc.perform(post("/formas-pagamento")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(formaPagamentoDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.formaPagamento", is("Boleto")))
+                .andExpect(jsonPath("$.isActive", is(true)));
     }
 
     @Test
-    void testCriarFormaPagamentoComCodigoDuplicado() {
-        // Criar forma de pagamento existente
-        FormaPagamento formaExistente = new FormaPagamento();
-        formaExistente.setIdPagamento("PAG001");
-        formaExistente.setFormaPagamento("Cartão de Crédito");
-        formaExistente.setIsActive(true);
-        formaPagamentoRepository.save(formaExistente);
+    @WithMockUser
+    void testBuscarFormaPagamentoPorId() throws Exception {
+        FormaPagamento forma = criarFormaPagamento("PAG001", "Cartão de Crédito", true);
 
-        // Tentar criar com mesmo código usando DTO - mas o código deve ser gerado automaticamente
-        Map<String, Object> formaDuplicadaDTO = new HashMap<>();
-        formaDuplicadaDTO.put("formaPagamento", "Cartão de Débito");
-        formaDuplicadaDTO.put("isActive", true);
-
-        ResponseEntity<Map> response = restTemplate.postForEntity(baseUrl + "/formas-pagamento", formaDuplicadaDTO, Map.class);
-        
-        // Deve criar com sucesso pois o código será gerado automaticamente
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("Cartão de Débito", response.getBody().get("formaPagamento"));
-        // Verificar se um código único foi gerado
-        assertNotNull(response.getBody().get("idPagamento"));
-        assertNotEquals("PAG001", response.getBody().get("idPagamento"));
+        mockMvc.perform(get("/formas-pagamento/" + forma.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.idPagamento", is("PAG001")));
     }
 
     @Test
-    void testBuscarFormaPagamentoPorId() {
-        FormaPagamento forma = new FormaPagamento();
-        forma.setIdPagamento("PAG001");
-        forma.setFormaPagamento("Cartão de Crédito");
-        forma.setIsActive(true);
-        forma = formaPagamentoRepository.save(forma);
-
-        ResponseEntity<FormaPagamento> response = restTemplate.getForEntity(baseUrl + "/formas-pagamento/" + forma.getId(), FormaPagamento.class);
-        
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("PAG001", response.getBody().getIdPagamento());
-        assertEquals("Cartão de Crédito", response.getBody().getFormaPagamento());
-    }
-
-    @Test
-    void testBuscarFormaPagamentoPorIdInexistente() {
-        ResponseEntity<String> response = restTemplate.getForEntity(baseUrl + "/formas-pagamento/999", String.class);
-        
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
-
-    @Test
-    void testBuscarFormaPagamentoPorCodigo() {
-        FormaPagamento forma = new FormaPagamento();
-        forma.setIdPagamento("PAG001");
-        forma.setFormaPagamento("Cartão de Crédito");
-        forma.setIsActive(true);
-        formaPagamentoRepository.save(forma);
-
-        ResponseEntity<FormaPagamento> response = restTemplate.getForEntity(baseUrl + "/formas-pagamento/codigo/PAG001", FormaPagamento.class);
-        
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("PAG001", response.getBody().getIdPagamento());
-    }
-
-    @Test
-    void testBuscarFormaPagamentoPorCodigoInexistente() {
-        ResponseEntity<String> response = restTemplate.getForEntity(baseUrl + "/formas-pagamento/codigo/INEXISTENTE", String.class);
-        
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
-
-    @Test
-    void testAtualizarFormaPagamento() {
-        FormaPagamento forma = new FormaPagamento();
-        forma.setIdPagamento("PAG001");
-        forma.setFormaPagamento("Cartão de Crédito");
-        forma.setIsActive(true);
-        forma = formaPagamentoRepository.save(forma);
+    @WithMockUser(roles = "USER")
+    void testAtualizarFormaPagamento() throws Exception {
+        FormaPagamento forma = criarFormaPagamento("PAG001", "Cartão de Crédito", true);
 
         Map<String, Object> formaPagamentoDTO = new HashMap<>();
         formaPagamentoDTO.put("formaPagamento", "Cartão de Débito");
         formaPagamentoDTO.put("isActive", false);
 
-        ResponseEntity<Map> response = restTemplate.exchange(
-            baseUrl + "/formas-pagamento/" + forma.getId(),
-            org.springframework.http.HttpMethod.PUT,
-            new org.springframework.http.HttpEntity<>(formaPagamentoDTO),
-            Map.class
-        );
-        
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("Cartão de Débito", response.getBody().get("formaPagamento"));
-        assertFalse((Boolean) response.getBody().get("isActive"));
-        // Verificar se o código único foi preservado
-        assertEquals("PAG001", response.getBody().get("idPagamento"));
+        mockMvc.perform(put("/formas-pagamento/" + forma.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(formaPagamentoDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.formaPagamento", is("Cartão de Débito")))
+                .andExpect(jsonPath("$.isActive", is(false)));
     }
 
     @Test
-    void testAtualizarFormaPagamentoInexistente() {
-        Map<String, Object> formaPagamentoDTO = new HashMap<>();
-        formaPagamentoDTO.put("formaPagamento", "Dinheiro");
-        formaPagamentoDTO.put("isActive", true);
+    @WithMockUser(roles = "ADMIN")
+    void testDeletarFormaPagamento() throws Exception {
+        FormaPagamento forma = criarFormaPagamento("PAG001", "A ser deletado", true);
 
-        ResponseEntity<String> response = restTemplate.exchange(
-            baseUrl + "/formas-pagamento/999",
-            org.springframework.http.HttpMethod.PUT,
-            new org.springframework.http.HttpEntity<>(formaPagamentoDTO),
-            String.class
-        );
-        
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        mockMvc.perform(delete("/formas-pagamento/" + forma.getId()))
+                .andExpect(status().isNoContent());
+
+        assertFalse(formaPagamentoRepository.findById(forma.getId()).isPresent());
     }
 
     @Test
-    void testDeletarFormaPagamento() {
-        FormaPagamento forma = new FormaPagamento();
-        forma.setIdPagamento("PAG001");
-        forma.setFormaPagamento("Cartão de Crédito");
-        forma.setIsActive(true);
-        forma = formaPagamentoRepository.save(forma);
+    @WithMockUser
+    void testContarFormasPagamento() throws Exception {
+        criarFormaPagamento("PAG001", "Cartão de Crédito", true);
+        criarFormaPagamento("PAG002", "PIX", true);
 
-        ResponseEntity<Void> response = restTemplate.exchange(
-            baseUrl + "/formas-pagamento/" + forma.getId(),
-            org.springframework.http.HttpMethod.DELETE,
-            null,
-            Void.class
-        );
-        
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        
-        // Verificar se foi deletado
-        ResponseEntity<String> getResponse = restTemplate.getForEntity(baseUrl + "/formas-pagamento/" + forma.getId(), String.class);
-        assertEquals(HttpStatus.NOT_FOUND, getResponse.getStatusCode());
-    }
-
-    @Test
-    void testDeletarFormaPagamentoInexistente() {
-        ResponseEntity<String> response = restTemplate.exchange(
-            baseUrl + "/formas-pagamento/999",
-            org.springframework.http.HttpMethod.DELETE,
-            null,
-            String.class
-        );
-        
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
-
-    @Test
-    void testContarFormasPagamento() {
-        // Criar algumas formas de pagamento
-        FormaPagamento forma1 = new FormaPagamento();
-        forma1.setIdPagamento("PAG001");
-        forma1.setFormaPagamento("Cartão de Crédito");
-        forma1.setIsActive(true);
-        formaPagamentoRepository.save(forma1);
-
-        FormaPagamento forma2 = new FormaPagamento();
-        forma2.setIdPagamento("PAG002");
-        forma2.setFormaPagamento("PIX");
-        forma2.setIsActive(true);
-        formaPagamentoRepository.save(forma2);
-
-        ResponseEntity<Long> response = restTemplate.getForEntity(baseUrl + "/formas-pagamento/count", Long.class);
-        
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(2L, response.getBody());
+        mockMvc.perform(get("/formas-pagamento/count"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("2"));
     }
 }

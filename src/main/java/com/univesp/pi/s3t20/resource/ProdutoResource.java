@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class ProdutoResource {
     @Operation(summary = "Listar todos os produtos", description = "Retorna uma lista com todos os produtos cadastrados")
     @ApiResponse(responseCode = "200", description = "Lista de produtos retornada com sucesso",
             content = @Content(schema = @Schema(implementation = ProdutoDTO.class)))
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'READONLY')")
     public List<ProdutoDTO> listarProdutos() {
         return produtoService.listarTodos().stream()
                 .map(mapperService::toProdutoDTO)
@@ -47,6 +49,7 @@ public class ProdutoResource {
                     content = @Content(schema = @Schema(implementation = ProdutoDTO.class))),
             @ApiResponse(responseCode = "404", description = "Produto não encontrado")
     })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'READONLY')")
     public ResponseEntity<ProdutoDTO> buscarProduto(
             @Parameter(description = "ID do produto", required = true, example = "1")
             @PathVariable Long id) {
@@ -64,6 +67,7 @@ public class ProdutoResource {
                     content = @Content(schema = @Schema(implementation = ProdutoDTO.class))),
             @ApiResponse(responseCode = "404", description = "Produto não encontrado")
     })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'READONLY')")
     public ResponseEntity<ProdutoDTO> buscarProdutoPorCodigo(
             @Parameter(description = "Código único do produto", required = true, example = "PROD001")
             @PathVariable String codigo) {
@@ -78,6 +82,7 @@ public class ProdutoResource {
     @Operation(summary = "Buscar produtos por categoria", description = "Retorna uma lista de produtos de uma categoria específica")
     @ApiResponse(responseCode = "200", description = "Lista de produtos da categoria retornada com sucesso",
             content = @Content(schema = @Schema(implementation = ProdutoDTO.class)))
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'READONLY')")
     public List<ProdutoDTO> buscarPorCategoria(
             @Parameter(description = "Categoria dos produtos", required = true, example = "Pizza")
             @PathVariable String categoria) {
@@ -93,6 +98,7 @@ public class ProdutoResource {
                     content = @Content(schema = @Schema(implementation = ProdutoDTO.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
     })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<ProdutoDTO> criarProduto(
             @Parameter(description = "Dados do produto a ser criado", required = true)
             @RequestBody ProdutoDTO produtoDTO) {
@@ -116,6 +122,7 @@ public class ProdutoResource {
             @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
     })
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<ProdutoDTO> atualizarProduto(
             @Parameter(description = "ID do produto a ser atualizado", required = true, example = "1")
             @PathVariable Long id,
@@ -139,6 +146,7 @@ public class ProdutoResource {
             @ApiResponse(responseCode = "204", description = "Produto deletado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Produto não encontrado")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletarProduto(
             @Parameter(description = "ID do produto a ser deletado", required = true, example = "1")
             @PathVariable Long id) {
@@ -152,6 +160,7 @@ public class ProdutoResource {
     @GetMapping("/categorias")
     @Operation(summary = "Listar categorias", description = "Retorna uma lista com todas as categorias de produtos")
     @ApiResponse(responseCode = "200", description = "Lista de categorias retornada com sucesso")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'READONLY')")
     public List<String> listarCategorias() {
         return produtoService.listarCategorias();
     }
@@ -159,6 +168,7 @@ public class ProdutoResource {
     @GetMapping("/count")
     @Operation(summary = "Contar produtos", description = "Retorna o número total de produtos cadastrados")
     @ApiResponse(responseCode = "200", description = "Contagem de produtos retornada com sucesso")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'READONLY')")
     public Long contar() {
         return produtoService.contar();
     }

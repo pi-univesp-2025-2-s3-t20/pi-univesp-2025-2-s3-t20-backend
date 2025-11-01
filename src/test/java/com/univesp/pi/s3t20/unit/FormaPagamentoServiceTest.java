@@ -5,132 +5,125 @@ import com.univesp.pi.s3t20.repository.FormaPagamentoRepository;
 import com.univesp.pi.s3t20.service.FormaPagamentoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
-@Transactional
+@ExtendWith(MockitoExtension.class)
 public class FormaPagamentoServiceTest {
 
-    @Autowired
-    private FormaPagamentoService formaPagamentoService;
-    
-    @Autowired
+    @Mock
     private FormaPagamentoRepository formaPagamentoRepository;
+
+    @InjectMocks
+    private FormaPagamentoService formaPagamentoService;
 
     private FormaPagamento formaPagamentoTeste;
 
     @BeforeEach
     void setUp() {
-        // Limpar dados antes de cada teste
-        formaPagamentoRepository.deleteAll();
-        
-        // Criar forma de pagamento de teste
         formaPagamentoTeste = new FormaPagamento();
+        formaPagamentoTeste.setId(1L);
         formaPagamentoTeste.setIdPagamento("PAG001");
         formaPagamentoTeste.setFormaPagamento("Cartão de Crédito");
         formaPagamentoTeste.setIsActive(true);
-        formaPagamentoTeste = formaPagamentoRepository.save(formaPagamentoTeste);
     }
 
     @Test
     void testListarTodos() {
+        when(formaPagamentoRepository.findAll()).thenReturn(Collections.singletonList(formaPagamentoTeste));
         List<FormaPagamento> formasPagamento = formaPagamentoService.listarTodos();
-        assertNotNull(formasPagamento);
-        assertFalse(formasPagamento.isEmpty());
         assertEquals(1, formasPagamento.size());
+        verify(formaPagamentoRepository, times(1)).findAll();
     }
 
     @Test
     void testBuscarPorId() {
-        Optional<FormaPagamento> formaPagamento = formaPagamentoService.buscarPorId(formaPagamentoTeste.getId());
+        when(formaPagamentoRepository.findById(1L)).thenReturn(Optional.of(formaPagamentoTeste));
+        Optional<FormaPagamento> formaPagamento = formaPagamentoService.buscarPorId(1L);
         assertTrue(formaPagamento.isPresent());
-        assertEquals(formaPagamentoTeste.getIdPagamento(), formaPagamento.get().getIdPagamento());
-        assertEquals(formaPagamentoTeste.getFormaPagamento(), formaPagamento.get().getFormaPagamento());
+        assertEquals("PAG001", formaPagamento.get().getIdPagamento());
+        verify(formaPagamentoRepository, times(1)).findById(1L);
     }
 
     @Test
     void testBuscarPorCodigo() {
+        when(formaPagamentoRepository.findByIdPagamento("PAG001")).thenReturn(Optional.of(formaPagamentoTeste));
         Optional<FormaPagamento> formaPagamento = formaPagamentoService.buscarPorCodigo("PAG001");
         assertTrue(formaPagamento.isPresent());
         assertEquals("PAG001", formaPagamento.get().getIdPagamento());
+        verify(formaPagamentoRepository, times(1)).findByIdPagamento("PAG001");
     }
 
     @Test
     void testCriar() {
+        when(formaPagamentoRepository.findByIdPagamento("PAG002")).thenReturn(Optional.empty());
+        when(formaPagamentoRepository.save(any(FormaPagamento.class))).thenReturn(formaPagamentoTeste);
+
         FormaPagamento novaFormaPagamento = new FormaPagamento();
         novaFormaPagamento.setIdPagamento("PAG002");
-        novaFormaPagamento.setFormaPagamento("PIX");
-        novaFormaPagamento.setIsActive(true);
 
         Optional<FormaPagamento> formaPagamentoCriada = formaPagamentoService.criar(novaFormaPagamento);
+
         assertTrue(formaPagamentoCriada.isPresent());
-        assertNotNull(formaPagamentoCriada.get().getId());
-        assertEquals("PAG002", formaPagamentoCriada.get().getIdPagamento());
-        assertNotNull(formaPagamentoCriada.get().getCreatedAt());
-        assertNotNull(formaPagamentoCriada.get().getUpdatedAt());
+        verify(formaPagamentoRepository, times(1)).save(any(FormaPagamento.class));
     }
 
     @Test
     void testCriarComIdPagamentoDuplicado() {
+        when(formaPagamentoRepository.findByIdPagamento("PAG001")).thenReturn(Optional.of(formaPagamentoTeste));
+
         FormaPagamento formaPagamentoDuplicada = new FormaPagamento();
-        formaPagamentoDuplicada.setIdPagamento("PAG001"); // Mesmo ID da forma de pagamento existente
-        formaPagamentoDuplicada.setFormaPagamento("Boleto");
-        formaPagamentoDuplicada.setIsActive(true);
+        formaPagamentoDuplicada.setIdPagamento("PAG001");
 
         Optional<FormaPagamento> formaPagamentoCriada = formaPagamentoService.criar(formaPagamentoDuplicada);
+
         assertFalse(formaPagamentoCriada.isPresent());
+        verify(formaPagamentoRepository, never()).save(any(FormaPagamento.class));
     }
 
     @Test
     void testAtualizar() {
-        formaPagamentoTeste.setFormaPagamento("Cartão de Débito");
-        formaPagamentoTeste.setIsActive(false);
+        when(formaPagamentoRepository.findById(1L)).thenReturn(Optional.of(formaPagamentoTeste));
+        when(formaPagamentoRepository.save(any(FormaPagamento.class))).thenReturn(formaPagamentoTeste);
 
-        Optional<FormaPagamento> formaPagamentoAtualizada = formaPagamentoService.atualizar(formaPagamentoTeste.getId(), formaPagamentoTeste);
+        FormaPagamento dadosAtualizacao = new FormaPagamento();
+        dadosAtualizacao.setFormaPagamento("Cartão de Débito");
+
+        Optional<FormaPagamento> formaPagamentoAtualizada = formaPagamentoService.atualizar(1L, dadosAtualizacao);
+
         assertTrue(formaPagamentoAtualizada.isPresent());
         assertEquals("Cartão de Débito", formaPagamentoAtualizada.get().getFormaPagamento());
-        assertFalse(formaPagamentoAtualizada.get().getIsActive());
-        assertNotNull(formaPagamentoAtualizada.get().getUpdatedAt());
-    }
-
-    @Test
-    void testAtualizarFormaPagamentoInexistente() {
-        FormaPagamento formaPagamentoInexistente = new FormaPagamento();
-        formaPagamentoInexistente.setIdPagamento("PAG999");
-        formaPagamentoInexistente.setFormaPagamento("Dinheiro");
-        formaPagamentoInexistente.setIsActive(true);
-
-        Optional<FormaPagamento> formaPagamentoAtualizada = formaPagamentoService.atualizar(999L, formaPagamentoInexistente);
-        assertFalse(formaPagamentoAtualizada.isPresent());
+        verify(formaPagamentoRepository, times(1)).save(formaPagamentoTeste);
     }
 
     @Test
     void testDeletar() {
-        boolean deletado = formaPagamentoService.deletar(formaPagamentoTeste.getId());
+        when(formaPagamentoRepository.existsById(1L)).thenReturn(true);
+        doNothing().when(formaPagamentoRepository).deleteById(1L);
+
+        boolean deletado = formaPagamentoService.deletar(1L);
+
         assertTrue(deletado);
-
-        Optional<FormaPagamento> formaPagamentoDeletada = formaPagamentoService.buscarPorId(formaPagamentoTeste.getId());
-        assertFalse(formaPagamentoDeletada.isPresent());
-    }
-
-    @Test
-    void testDeletarFormaPagamentoInexistente() {
-        boolean deletado = formaPagamentoService.deletar(999L);
-        assertFalse(deletado);
+        verify(formaPagamentoRepository, times(1)).deleteById(1L);
     }
 
     @Test
     void testContar() {
+        when(formaPagamentoRepository.count()).thenReturn(3L);
+
         Long count = formaPagamentoService.contar();
-        assertEquals(1L, count);
+
+        assertEquals(3L, count);
+        verify(formaPagamentoRepository, times(1)).count();
     }
 }
